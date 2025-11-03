@@ -4,6 +4,8 @@ import com.gdg.jpapractice.domain.Brand;
 import com.gdg.jpapractice.domain.Product;
 import com.gdg.jpapractice.dto.ProductInfoResponseDto;
 import com.gdg.jpapractice.dto.ProductSaveRequestDto;
+import com.gdg.jpapractice.global.error.code.ErrorStatus;
+import com.gdg.jpapractice.global.exception.GeneralException;
 import com.gdg.jpapractice.repository.BrandRepository;
 import com.gdg.jpapractice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ public class ProductService {
     @Transactional
     public ProductInfoResponseDto save(ProductSaveRequestDto requestDto) {
         Brand brand = brandRepository.findById(requestDto.brandId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 브랜드입니다. id=" + requestDto.brandId()));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.BRAND_NOT_FOUND));
 
         Product product = Product.builder()
                 .brand(brand)
@@ -48,7 +50,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductInfoResponseDto findById(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다. id=" + productId));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.PRODUCT_NOT_FOUND));
         return ProductInfoResponseDto.from(product);
     }
 
@@ -56,10 +58,10 @@ public class ProductService {
     @Transactional
     public ProductInfoResponseDto update(Long productId, ProductSaveRequestDto requestDto) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다. id=" + productId));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.PRODUCT_NOT_FOUND));
 
         Brand brand = brandRepository.findById(requestDto.brandId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 브랜드입니다. id=" + requestDto.brandId()));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.BRAND_NOT_FOUND));
 
         product.update(brand, requestDto.name(), requestDto.price());
         return ProductInfoResponseDto.from(product);
@@ -69,7 +71,7 @@ public class ProductService {
     @Transactional
     public void delete(Long productId) {
         if (!productRepository.existsById(productId)) {
-            throw new IllegalArgumentException("존재하지 않는 상품입니다. id=" + productId);
+            throw new GeneralException(ErrorStatus.PRODUCT_NOT_FOUND);
         }
         productRepository.deleteById(productId);
     }

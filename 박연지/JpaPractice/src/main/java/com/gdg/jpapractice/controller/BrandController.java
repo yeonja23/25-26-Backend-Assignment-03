@@ -2,6 +2,8 @@ package com.gdg.jpapractice.controller;
 
 import com.gdg.jpapractice.dto.BrandInfoResponseDto;
 import com.gdg.jpapractice.dto.BrandSaveRequestDto;
+import com.gdg.jpapractice.global.common.response.BaseResponse;
+import com.gdg.jpapractice.global.error.code.SuccessStatus;
 import com.gdg.jpapractice.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +23,13 @@ public class BrandController {
     private final BrandService brandService;
 
     @PostMapping
-    public ResponseEntity<BrandInfoResponseDto> createBrand(@RequestBody BrandSaveRequestDto requestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(brandService.save(requestDto));
+    public BaseResponse<BrandInfoResponseDto> createBrand(@RequestBody BrandSaveRequestDto requestDto) {
+        return BaseResponse.onSuccess(SuccessStatus.CREATED, brandService.save(requestDto));
     }
 
     @DeleteMapping("/{brandId}")
-    public ResponseEntity<Void> deleteBrandById(@PathVariable Long brandId) {
+    public BaseResponse<Void> deleteBrandById(@PathVariable Long brandId) {
         brandService.delete(brandId);
-        return ResponseEntity.noContent().build();
+        return BaseResponse.onSuccess(SuccessStatus.OK, null);
     }
 }

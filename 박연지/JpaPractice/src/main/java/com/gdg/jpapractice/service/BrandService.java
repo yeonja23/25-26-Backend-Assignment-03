@@ -3,6 +3,8 @@ package com.gdg.jpapractice.service;
 import com.gdg.jpapractice.domain.Brand;
 import com.gdg.jpapractice.dto.BrandInfoResponseDto;
 import com.gdg.jpapractice.dto.BrandSaveRequestDto;
+import com.gdg.jpapractice.global.error.code.ErrorStatus;
+import com.gdg.jpapractice.global.exception.GeneralException;
 import com.gdg.jpapractice.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class BrandService {
     @Transactional
     public void delete(Long brandId) {
         if (!brandRepository.existsById(brandId)) {
-            throw new IllegalArgumentException("삭제할 브랜드가 존재하지 않습니다. id=" + brandId);
+            throw new GeneralException(ErrorStatus.BRAND_NOT_FOUND);
         }
         brandRepository.deleteById(brandId);
     }

@@ -40,7 +40,7 @@ public class ProductService {
     // 상품 전체 조회
     @Transactional(readOnly = true)
     public List<ProductInfoResponseDto> findAll() {
-        return productRepository.findAll()
+        return productRepository.findAllWithBrand()
                 .stream()
                 .map(ProductInfoResponseDto::from)
                 .toList();
